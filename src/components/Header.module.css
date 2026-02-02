@@ -1,0 +1,83 @@
+.header {
+    height: var(--nav-height);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.navContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.logoLink {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+}
+
+.logoImage {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.logoText {
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, var(--color-primary-dark), var(--color-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navLinks {
+    display: flex;
+    gap: 2rem;
+}
+
+.navLink {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.navLink:hover {
+    color: var(--color-primary);
+}
+
+.ctaButton {
+    padding: 0.6rem 1.2rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ctaButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .navLinks {
+        display: none;
+    }
+}
