@@ -23,11 +23,12 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy with rsync
+        uses: burnett01/rsync-deploy@v6.0.1
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/"
-          target: "/var/www/mini-monde.lmcfactory.com.br"
+          switches: -avzr --delete
+          path: dist/
+          remote_host: ${{ secrets.REMOTE_HOST }}
+          remote_user: ${{ secrets.REMOTE_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote_path: /var/www/mini-monde.lmcfactory.com.br
