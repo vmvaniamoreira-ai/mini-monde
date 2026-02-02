@@ -1,21 +1,25 @@
-name: Deploy to Hostinger
+name: Deploy Mini-Monde
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -23,12 +27,22 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy with rsync
-        uses: burnett01/rsync-deploy@v6.0.1
-        with:
-          switches: -avzr --delete
-          path: dist/
-          remote_host: ${{ secrets.REMOTE_HOST }}
-          remote_user: ${{ secrets.REMOTE_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          remote_path: /var/www/mini-monde.lmcfactory.com.br
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ secrets.REMOTE_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+        run: |
+          echo "🚀 Deploying files to server..."
+          scp -r -i ~/.ssh/id_rsa dist/* ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:/var/www/mini-monde.lmcfactory.com.br/
+          echo "✅ Deployment complete."
+
+      - name: Verify Deployed Files on Server
+        run: |
+          echo "🔍 Verifying files on server..."
+          ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'ENDSSH'
+            ls -lah /var/www/mini-monde.lmcfactory.com.br/
+          ENDSSH
